@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: user_service_app
+    ports:
+      - "9000:9000"
+    volumes:
+      - .:/var/www
+    networks:
+      - user_service_network
+    depends_on:
+      - db
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ms_user_service
+      DB_USERNAME: root
+      DB_PASSWORD: password
+
+  db:
+    image: mysql:8
+    container_name: user_service_db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: ms_user_service
+    ports:
+      - "3307:3306"
+    networks:
+      - user_service_network
+
+networks:
+  user_service_network:
+    driver: bridge
